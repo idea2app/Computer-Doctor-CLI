@@ -1,17 +1,17 @@
 import { render } from 'ink';
-import React from 'react';
+
 import { HealthCheckAction } from '../core/actions.js';
 import { DefaultActionExecutor } from '../core/action-executor.js';
 import { DefaultDiagnosticProvider } from '../core/diagnostic-provider.js';
-import { createAppDataSource } from '../infra/db/data-source.js';
-import { TypeormSessionStore } from '../infra/db/typeorm-session-store.js';
+import { type RuntimeContext } from '../core/contracts.js';
+import { createAppDataSource } from '../infra/store/data-source.js';
+import { TypeormSessionStore } from '../infra/store/typeorm-session-store.js';
 import { VercelAIPlanGenerator } from '../infra/llm/vercel-ai-plan-generator.js';
 import { DefaultMarkdownReportRenderer } from '../report/markdown-report-renderer.js';
 import { RunSummary } from '../ui/run-summary.js';
 import { runMVPFlow } from '../workflow/mvp-runner.js';
-import { type RuntimeContext } from '../core/contracts.js';
 
-export async function runCommand(context: RuntimeContext): Promise<void> {
+export async function runMVPCommand(context: RuntimeContext & { verbose?: boolean }) {
   const dataSource = createAppDataSource(context.workspaceDir);
   const sessionStore = new TypeormSessionStore(dataSource);
 
@@ -23,7 +23,7 @@ export async function runCommand(context: RuntimeContext): Promise<void> {
     reportRenderer: new DefaultMarkdownReportRenderer(context.workspaceDir)
   });
 
-  render(React.createElement(RunSummary, { result, verbose: context.verbose }));
+  render(<RunSummary result={result} verbose={!!context.verbose} />);
 
   await dataSource.destroy();
 }

@@ -1,23 +1,24 @@
-import { afterEach, test } from 'node:test';
+import 'reflect-metadata';
 import assert from 'node:assert/strict';
+import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
-import { HealthCheckAction } from '../core/actions.js';
-import { DefaultActionExecutor } from '../core/action-executor.js';
-import { DefaultDiagnosticProvider } from '../core/diagnostic-provider.js';
-import { createAppDataSource } from '../infra/db/data-source.js';
-import { TypeormSessionStore } from '../infra/db/typeorm-session-store.js';
-import { VercelAIPlanGenerator } from '../infra/llm/vercel-ai-plan-generator.js';
-import { DefaultMarkdownReportRenderer } from '../report/markdown-report-renderer.js';
-import { runMVPFlow } from './mvp-runner.js';
+import { afterEach, test } from 'node:test';
+
+import { HealthCheckAction } from '../src/core/actions.js';
+import { DefaultActionExecutor } from '../src/core/action-executor.js';
+import { DefaultDiagnosticProvider } from '../src/core/diagnostic-provider.js';
+import { createAppDataSource } from '../src/infra/store/data-source.js';
+import { Session, StageRecord } from '../src/infra/store/entities.js';
+import { TypeormSessionStore } from '../src/infra/store/typeorm-session-store.js';
+import { VercelAIPlanGenerator } from '../src/infra/llm/vercel-ai-plan-generator.js';
+import { DefaultMarkdownReportRenderer } from '../src/report/markdown-report-renderer.js';
+import { runMVPFlow } from '../src/workflow/mvp-runner.js';
 
 const tempDirs: string[] = [];
 
 afterEach(async () => {
-  for (const dir of tempDirs.splice(0)) {
-    await rm(dir, { recursive: true, force: true });
-  }
+  for (const dir of tempDirs.splice(0)) await rm(dir, { recursive: true, force: true });
 });
 
 test('runs MVP flow and persists markdown + sqlite data', async () => {
@@ -27,7 +28,7 @@ test('runs MVP flow and persists markdown + sqlite data', async () => {
   const dataSource = createAppDataSource(workspaceDir);
 
   const result = await runMVPFlow(
-    { verbose: false, workspaceDir },
+    { workspaceDir },
     {
       diagnosticProvider: new DefaultDiagnosticProvider(),
       planGenerator: new VercelAIPlanGenerator(),
@@ -51,8 +52,8 @@ test('runs MVP flow and persists markdown + sqlite data', async () => {
     assert.match(content, /Session:/);
   }
 
-  const sessionCount = await dataSource.getRepository('sessions').count();
-  const stageCount = await dataSource.getRepository('stage_records').count();
+  const sessionCount = await dataSource.getRepository(Session).count();
+  const stageCount = await dataSource.getRepository(StageRecord).count();
 
   assert.equal(sessionCount, 1);
   assert.equal(stageCount, 4);

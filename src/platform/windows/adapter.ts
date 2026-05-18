@@ -1,10 +1,11 @@
 import os from 'node:os';
-import { type DiagnosticSnapshot, type PlatformAdapter, type RuntimeContext } from '../../core/contracts.js';
 
-export class WindowsPlatformAdapter implements PlatformAdapter {
-  readonly id = 'windows';
+import { type DiagnosticSnapshot, PlatformAdapter, type RuntimeContext } from '../../core/contracts.js';
 
-  supportsCurrentPlatform(): boolean {
+export class WindowsPlatformAdapter extends PlatformAdapter {
+  id = 'windows';
+
+  supportsCurrentPlatform() {
     return process.platform === 'win32';
   }
 

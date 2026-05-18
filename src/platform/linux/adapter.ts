@@ -1,10 +1,11 @@
 import os from 'node:os';
-import { type DiagnosticSnapshot, type PlatformAdapter, type RuntimeContext } from '../../core/contracts.js';
 
-export class LinuxPlatformAdapter implements PlatformAdapter {
-  readonly id = 'linux';
+import { type DiagnosticSnapshot, PlatformAdapter, type RuntimeContext } from '../../core/contracts.js';
 
-  supportsCurrentPlatform(): boolean {
+export class LinuxPlatformAdapter extends PlatformAdapter {
+  id = 'linux';
+
+  supportsCurrentPlatform() {
     return process.platform === 'linux';
   }
 

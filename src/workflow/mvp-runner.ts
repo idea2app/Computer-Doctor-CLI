@@ -1,4 +1,11 @@
-import { type ActionExecutor, type DiagnosticProvider, type MarkdownReportRenderer, type PlanGenerator, type RuntimeContext, type SessionStore } from '../core/contracts.js';
+import {
+  ActionExecutor,
+  DiagnosticProvider,
+  MarkdownReportRenderer,
+  PlanGenerator,
+  type RuntimeContext,
+  SessionStore
+} from '../core/contracts.js';
 import { createPlatformAdapters, selectCurrentAdapter } from '../platform/registry.js';
 
 export interface MVPFlowResult {
@@ -35,7 +42,7 @@ export async function runMVPFlow(context: RuntimeContext, deps: MVPDependencies)
     const repairReport = await deps.reportRenderer.renderStage(session.id, 'repair', repairs);
     await deps.sessionStore.appendStage(session.id, 'repair', repairs, repairReport);
 
-    const rollback = repairs.map(item => ({ actionId: item.actionId, rollbackHint: item.rollbackHint }));
+    const rollback = repairs.map(({ actionId, rollbackHint }) => ({ actionId, rollbackHint }));
     const rollbackReport = await deps.reportRenderer.renderStage(session.id, 'rollback', rollback);
     await deps.sessionStore.appendStage(session.id, 'rollback', rollback, rollbackReport);
 

@@ -1,10 +1,11 @@
 import os from 'node:os';
-import { type DiagnosticSnapshot, type PlatformAdapter, type RuntimeContext } from '../../core/contracts.js';
 
-export class MacOSPlatformAdapter implements PlatformAdapter {
-  readonly id = 'macos';
+import { type DiagnosticSnapshot, PlatformAdapter, type RuntimeContext } from '../../core/contracts.js';
 
-  supportsCurrentPlatform(): boolean {
+export class MacOSPlatformAdapter extends PlatformAdapter {
+  id = 'macos';
+
+  supportsCurrentPlatform() {
     return process.platform === 'darwin';
   }
 

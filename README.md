@@ -19,7 +19,7 @@ This repository now includes a TypeScript 6 + PNPM 11 oriented CLI framework wit
 
 ```bash
 npm install
-npm run mvp -- --verbose
+npm run debug -- --verbose
 ```
 
 Generated artifacts:

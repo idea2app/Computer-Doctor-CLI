@@ -1,21 +1,21 @@
-import { type ActionExecution, type RepairAction, type RuntimeContext } from './contracts.js';
-import { ZxCommandRunner } from '../infra/shell/zx-command-runner.js';
+import { $ } from 'zx';
 
-export class HealthCheckAction implements RepairAction {
-  readonly id = 'health-check';
-  readonly title = '运行最小健康检查';
+import { type ActionExecution, RepairAction, type RuntimeContext } from './contracts.js';
 
-  async execute(context: RuntimeContext, payload: Record<string, string>): Promise<ActionExecution> {
+export class HealthCheckAction extends RepairAction {
+  id = 'health-check';
+  title = '运行最小健康检查';
+
+  async execute(_context: RuntimeContext, payload: Record<string, string>): Promise<ActionExecution> {
     const command = payload.command ?? 'node';
     const args = [payload.arg0 ?? '-e', payload.arg1 ?? "console.log('health-check-ok')"];
-    const runner = new ZxCommandRunner(context.verbose);
-
-    const output = await runner.run(command, args);
+    const result = await $`${command} ${args}`;
+    const output = result + '';
 
     return {
       actionId: this.id,
       success: true,
-      output,
+      output: output.trim(),
       rollbackHint: '该动作为只读健康检查，无需回滚。'
     };
   }
