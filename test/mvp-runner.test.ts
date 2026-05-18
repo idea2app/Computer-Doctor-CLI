@@ -28,7 +28,7 @@ test('runs MVP flow and persists markdown + sqlite data', async () => {
   const dataSource = createAppDataSource(workspaceDir);
 
   const result = await runMVPFlow(
-    { workspaceDir },
+    { verbose: false, workspaceDir },
     {
       diagnosticProvider: new DefaultDiagnosticProvider(),
       planGenerator: new VercelAIPlanGenerator(),

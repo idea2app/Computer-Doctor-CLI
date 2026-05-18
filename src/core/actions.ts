@@ -10,12 +10,12 @@ export class HealthCheckAction extends RepairAction {
     const command = payload.command ?? 'node';
     const args = [payload.arg0 ?? '-e', payload.arg1 ?? "console.log('health-check-ok')"];
     const result = await $`${command} ${args}`;
-    const output = result + '';
+    const output = (result + '').trim();
 
     return {
       actionId: this.id,
       success: true,
-      output: output.trim(),
+      output,
       rollbackHint: '该动作为只读健康检查，无需回滚。'
     };
   }

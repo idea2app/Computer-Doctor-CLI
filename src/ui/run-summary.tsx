@@ -1,20 +1,22 @@
 import { Box, Text } from 'ink';
+import { FC } from 'react';
 
 import type { MVPFlowResult } from '../workflow/mvp-runner.js';
 
-export function RunSummary({ result, verbose }: { result: MVPFlowResult; verbose: boolean }) {
-  return (
-    <Box flexDirection="column">
-      <Text color="green">✔ Computer Doctor MVP flow completed</Text>
-      <Text>Session: {result.sessionId}</Text>
-      <Text>Platform adapter: {result.platform}</Text>
-      <Text>Actions executed: {result.actionCount}</Text>
-      {Object.entries(result.reports).map(([stage, reportPath]) => (
-        <Text key={stage}>
-          - {stage}: {reportPath}
-        </Text>
-      ))}
-      {verbose ? <Text color="yellow">Verbose mode enabled</Text> : null}
-    </Box>
-  );
-}
+export const RunSummary: FC<{ result: MVPFlowResult; verbose: boolean }> = ({
+  result: { sessionId, platform, actionCount, reports },
+  verbose
+}) => (
+  <Box flexDirection="column">
+    <Text color="green">✔ Computer Doctor MVP flow completed</Text>
+    <Text>Session: {sessionId}</Text>
+    <Text>Platform adapter: {platform}</Text>
+    <Text>Actions executed: {actionCount}</Text>
+    {Object.entries(reports).map(([stage, reportPath]) => (
+      <Text key={stage}>
+        - {stage}: {reportPath}
+      </Text>
+    ))}
+    {verbose && <Text color="yellow">Verbose mode enabled</Text>}
+  </Box>
+);

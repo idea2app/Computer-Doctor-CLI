@@ -1,6 +1,7 @@
 export type StageType = 'diagnostic' | 'plan' | 'repair' | 'rollback';
 
 export interface RuntimeContext {
+  verbose: boolean;
   workspaceDir: string;
 }
 

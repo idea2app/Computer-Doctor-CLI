@@ -11,7 +11,7 @@ import { DefaultMarkdownReportRenderer } from '../report/markdown-report-rendere
 import { RunSummary } from '../ui/run-summary.js';
 import { runMVPFlow } from '../workflow/mvp-runner.js';
 
-export async function runMVPCommand(context: RuntimeContext & { verbose?: boolean }) {
+export async function runMVPCommand(context: RuntimeContext) {
   const dataSource = createAppDataSource(context.workspaceDir);
   const sessionStore = new TypeormSessionStore(dataSource);
 
@@ -23,7 +23,7 @@ export async function runMVPCommand(context: RuntimeContext & { verbose?: boolea
     reportRenderer: new DefaultMarkdownReportRenderer(context.workspaceDir)
   });
 
-  render(<RunSummary result={result} verbose={!!context.verbose} />);
+  render(<RunSummary result={result} verbose={context.verbose} />);
 
   await dataSource.destroy();
 }

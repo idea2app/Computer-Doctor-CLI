@@ -17,12 +17,20 @@ This repository now includes a TypeScript 6 + PNPM 11 oriented CLI framework wit
 
 ## Usage
 
-```bash
-npm install
-npm run debug -- --verbose
+```shell
+cp computer-doctor ~/Desktop
+cd ~/Desktop
+computer-doctor -h
 ```
 
-Generated artifacts:
+## Development
+
+```bash
+pnpm install
+pnpm debug --verbose
+```
+
+## Generated artifacts
 
 - `computer-doctor.sqlite`
 - `reports/<session-id>/diagnostic.md`
